@@ -55,3 +55,4 @@ if (-not (Test-Path $FolderPath)) {
 }
 
 $reportData | Export-Csv -Path (Join-Path -Path $FolderPath -ChildPath "ExchangeServerStatus.csv") -NoTypeInformation
+#done
