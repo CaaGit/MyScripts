@@ -1,35 +1,40 @@
 # Import the Exchange PowerShell module
-if (-not (Get-Module -Name ExchangeManagementShell -ErrorAction SilentlyContinue)) {
+<# if (-not (Get-Module -Name ExchangeManagementShell -ErrorAction SilentlyContinue)) {
     Import-Module ExchangeManagementShell
 }
-
+ #>
 # Get all Exchange servers in the organization
 $ExchangeServers = Get-ExchangeServer | Where-Object { $_.ServerRole -notlike "*UnifiedMessaging*" } | Select-Object -ExpandProperty Name
 
 $ExchangeServices = @(
     "MSExchangeADTopology",
     "MSExchangeAntispamUpdate",
+    "MSExchangeCompliance",
+    "MSExchangeDagMgmt",
+    "MSExchangeDelivery",
+    "MSExchangeDiagnostics",
     "MSExchangeEdgeSync",
-    "MSExchangeFBA",
-    "MSExchangeFrontendTransport",
+    "MSExchangeFastSearch",
+    "MSExchangeFrontEndTransport",
     "MSExchangeHM",
-    "MSExchangeIMAP4",
+    "MSExchangeHMRecovery",
+    "MSExchangeImap4",
+    "MSExchangeIMAP4BE",
     "MSExchangeIS",
     "MSExchangeMailboxAssistants",
     "MSExchangeMailboxReplication",
-    "MSExchangeMailSubmission",
-    "MSExchangeProtectedServiceHost",
+    "MSExchangeMitigation",
+    "MSExchangePop3",
+    "MSExchangePOP3BE",
     "MSExchangeRepl",
     "MSExchangeRPC",
-    "MSExchangeSA",
-    "MSExchangeSearch",
     "MSExchangeServiceHost",
+    "MSExchangeSubmission",
     "MSExchangeThrottling",
     "MSExchangeTransport",
     "MSExchangeTransportLogSearch",
-    "MSExchangeUM",
-    "MSExchangeUMCR",
-    "MSExchangeUMCallData"
+    "W3Svc",
+    "WinRM"
 )
 
 $reportData = @()
