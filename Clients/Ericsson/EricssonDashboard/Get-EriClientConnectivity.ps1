@@ -1,16 +1,31 @@
 # Get all Exchange servers in the organization
-$ExchangeServers = Get-ExchangeServer | Where-Object { $_.ServerRole -notlike "*UnifiedMessaging*" } | Select-Object -ExpandProperty Name
+$ExchangeServers = Get-ExchangeServer | Where-Object { $_.ServerRole -notlike "*UnifiedMessaging*" }
 
-$reportData = @()
+
+$reportData = [System.Collections.ArrayList]@()
+
+
+
+
+
+# Rest of the code remains the same
+
+
+
+
+$credentials = Get-Credential
+
 foreach ($ExchangeServer in $ExchangeServers) {
-    $ECPStatus = Test-EcpConnectivity -URL "https://$ExchangeServer/ecp" -MailboxCredential (Get-Credential) -Authentication Basic -ErrorAction SilentlyContinue
-    $OWAStatus = Test-OwaConnectivity -URL "https://$ExchangeServer/owa" -MailboxCredential (Get-Credential) -Authentication Basic -ErrorAction SilentlyContinue
+    $ECPStatus = Test-EcpConnectivity -URL "https://$ExchangeServer/ecp" -MailboxCredential $credentials -Authentication Basic -ErrorAction SilentlyContinue
+    $OWAStatus = Test-OwaConnectivity -URL "https://$ExchangeServer/owa" -MailboxCredential $credentials -Authentication Basic -ErrorAction SilentlyContinue
     $IMAPStatus = Test-ImapConnectivity -MailboxServer $ExchangeServer -ErrorAction SilentlyContinue
     $POPStatus = Test-PopConnectivity -MailboxServer $ExchangeServer -ErrorAction SilentlyContinue
     $MAPIStatus = Test-MapiConnectivity -Identity $ExchangeServer -ErrorAction SilentlyContinue
-    $EWSStatus = Test-WebServicesConnectivity -MailboxCredential (Get-Credential) -Identity $ExchangeServer -ErrorAction SilentlyContinue
+    $EWSStatus = Test-WebServicesConnectivity -MailboxCredential $credentials -Identity $ExchangeServer -ErrorAction SilentlyContinue
+
+
     
-    $reportData += [PSCustomObject]@{
+    $reportData.Add([PSCustomObject]@{
         'Exchange Server' = $ExchangeServer
         'ECP Status' = $ECPStatus.Result
         'OWA Status' = $OWAStatus.Result
@@ -18,7 +33,8 @@ foreach ($ExchangeServer in $ExchangeServers) {
         'POP Status' = $POPStatus.Result
         'MAPI Status' = $MAPIStatus.Result
         'EWS Status' = $EWSStatus.Result
-    }
+    }) | Out-Null
+    
 }
 
 $FolderPath = "C:\ScriptsResults\EricsonDashboard"
